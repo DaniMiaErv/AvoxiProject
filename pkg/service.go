@@ -1,21 +1,26 @@
 package checkip
 
 import (
-	"context"
+	"context" //in case of concurrent requests
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
-	"os"
-
-	"github.com/go-kit/kit/log"
 )
 
-type checkipService struct{}
+type Service interface {
+	GetPassFail(ctx context.Context, ipAd string, countryList []string) (bool, error)
+	//ServiceStatus(ctx context.Context) (int, error)
+}
 
-//constructor
-func NewService() Service { return &checkipService{} }
+type checkipService struct {
+	log log.Logger
+}
 
-func (c *checkipService) Get(_ context.Context, ipAd string, countryList []string) (bool, error) {
+func (svc *checkipService) GetPassFail(_ context.Context, ipAd string, countryList []string) (bool, error) {
+	//func NewService() Service { return &checkipService{} }
+
+	//func (c *checkipService) Get(_ context.Context, ipAd string, countryList []string) (bool, error) {
 
 	//api gateway
 
@@ -84,14 +89,7 @@ func (c *checkipService) Get(_ context.Context, ipAd string, countryList []strin
 
 }
 
-func (c *checkipService) ServiceStatus(_ context.Context) (int, error) {
-	log.Println("Checking status of the ip check service")
-	return http.StatusOK, nil
-}
-
-var logger log.Logger
-
-func init() {
-	logger = log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
-	logger = log.With(logger, "timestamp", log.DefaultTimestampUTC)
-}
+// func (c *checkipService) ServiceStatus(_ context.Context) (int, error) {
+// 	log.Println("Checking status of the ip check service")
+// 	return http.StatusOK, nil
+// }
