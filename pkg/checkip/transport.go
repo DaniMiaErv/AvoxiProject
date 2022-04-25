@@ -10,9 +10,9 @@ import (
 	httptransport "github.com/go-kit/kit/transport/http"
 )
 
-func GetPassFailHandler(endp endpoint.Endpoint, options []httptransport.ServerOption) *httptransport.Server {
+func GetCheckIPHandler(ep endpoint.Endpoint, options []httptransport.ServerOption) *httptransport.Server {
 	return httptransport.NewServer(
-		endp,
+		ep,
 		decodeGetPassFailRequest,
 		encodeGetPassFailResponse,
 		options...,
@@ -21,7 +21,7 @@ func GetPassFailHandler(endp endpoint.Endpoint, options []httptransport.ServerOp
 }
 
 func decodeGetPassFailRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	var request GetPassFailRequest
+	var request GetCheckIPRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		return nil, err
 	}

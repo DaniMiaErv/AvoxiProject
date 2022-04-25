@@ -6,7 +6,7 @@ import (
 	"os"
 
 	//checkip "github.com/DaniMiaErv/AvoxiProject/pkg/ipcheck"
-	checkip "github.com/DaniMiaErv/AvoxiProject"
+	checkip "github.com/DaniMiaErv/AvoxiProject/pkg/checkip"
 
 	"github.com/go-kit/kit/endpoint"
 	kitlog "github.com/go-kit/kit/log"
@@ -29,13 +29,16 @@ func main() {
 		logger = kitlog.With(logger, "caller", kitlog.DefaultCaller)
 	}
 
+	// var srv checkip.Service{
+	// 	srv = checkip.
+	// }
 	var middlewares []endpoint.Middleware
 	var options []httptransport.ServerOption
 	svc := checkip.NewService(logger)
 	eps := checkip.MakeEndpoints(svc, logger, middlewares)
 	r := mux.NewRouter()
-	r.Methods(http.MethodGet).Path("/palindrome").Handler(checkip.GetIsPalHandler(eps.GetIsPalindrome, options))
-	r.Methods(http.MethodGet).Path("/reverse").Handler(checkip.GetReverseHandler(eps.GetReverse, options))
+	r.Methods(http.MethodGet).Path("/checkip").Handler(checkip.GetCheckIPHandler(eps.GetIPCheck, options))
+
 	level.Info(logger).Log("status", "listening", "port", "8080")
 	svr := http.Server{
 		Addr:    "127.0.0.1:8080",

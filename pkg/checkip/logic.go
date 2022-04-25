@@ -4,12 +4,13 @@ import (
 	"context" //in case of concurrent requests
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
+
+	"github.com/go-kit/kit/log"
 )
 
 type Service interface {
-	GetPassFail(ctx context.Context, ipAd string, countryList []string) (bool, error)
+	GetIPCheck(ctx context.Context, ipAd string, countryList []string) (bool, error)
 	//ServiceStatus(ctx context.Context) (int, error)
 }
 
@@ -17,27 +18,18 @@ type checkipService struct {
 	log log.Logger
 }
 
-func (svc *checkipService) GetPassFail(_ context.Context, ipAd string, countryList []string) (bool, error) {
+func NewService(logger log.Logger) Service {
+	return &checkipService{
+		log: logger,
+	}
+}
+
+func (svc *checkipService) GetIPCheck(ctx context.Context, ipAd string, countryList []string) (bool, error) {
 	//func NewService() Service { return &checkipService{} }
 
-	//func (c *checkipService) Get(_ context.Context, ipAd string, countryList []string) (bool, error) {
-
-	//api gateway
-
-	// func HandleRequest(request events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error){
-
-	// }
-
-	// func CheckIPWhiteList(ipAd string, countryList []string) bool {
-	//func CheckIPHandler(w http.ResponseWriter, r *http.Request){
-	//Step 0. Check that valid IP address was passed.
 	//Step 1. Find what country ip address is from.
 	//Step 2. Put the list of countries into a map.
-	//Step 3. Check if the list passed is empty.
 	//Step 4. Compare it to the whitelisted countries. (contains)
-
-	//create a get request to return fields:
-	//status, message (if status fails), country and query)
 
 	response, err := http.Get("http://ip-api.com/json/" + ipAd + "?fields=status,message,country,query")
 	if err != nil {
@@ -88,8 +80,3 @@ func (svc *checkipService) GetPassFail(_ context.Context, ipAd string, countryLi
 	return false, nil
 
 }
-
-// func (c *checkipService) ServiceStatus(_ context.Context) (int, error) {
-// 	log.Println("Checking status of the ip check service")
-// 	return http.StatusOK, nil
-// }

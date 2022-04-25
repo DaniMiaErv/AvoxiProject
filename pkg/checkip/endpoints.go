@@ -5,8 +5,8 @@ import (
 	"errors"
 
 	"github.com/go-kit/kit/endpoint"
-	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/level"
+	"github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 )
 
 type Endpoints struct {
@@ -21,13 +21,13 @@ func MakeEndpoints(svc Service, logger log.Logger, middleware []endpoint.Middlew
 
 func makeCheckIPEndpoint(svc Service, logger log.Logger) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req, ok := request.(*GetPassFailRequest)
+		req, ok := request.(*GetCheckIPRequest)
 		if !ok {
 			level.Error(logger).Log("message", "invalid request")
 			return nil, errors.New("invalid request given")
 		}
 
-		passFail, err := svc.GetPassFail(ctx, req.ipAd, req.countryList)
+		passFail, err := svc.GetIPCheck(ctx, req.IpAd, req.CountryList)
 		return &PassFailResponse{
 			PassFail: passFail,
 			Error:    err,
